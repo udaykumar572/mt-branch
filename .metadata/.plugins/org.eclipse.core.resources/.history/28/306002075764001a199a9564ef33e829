@@ -1,0 +1,99 @@
+package com.cts.project.stockprice.controller;
+
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.cts.project.stockprice.dao.StockPriceRepository;
+import com.cts.project.stockprice.pojo.StockPrice;
+@CrossOrigin(origins="http://localhost:4200") 
+@RequestMapping("/stockprice")
+
+
+@RestController
+public class StockPriceController 
+{
+	@Autowired
+	private StockPriceRepository stockpriceRepository;
+	@RequestMapping("/getAllstockprices")
+	public Iterable<StockPrice> getAllstockprices() {
+		return stockpriceRepository.findAll();
+	}
+	@PostMapping("/saveStockPrice")
+	public StockPrice saveStockPrice(@RequestBody StockPrice stockprice)
+	{
+		System.out.println(stockprice);
+		stockpriceRepository.save(stockprice);
+		return stockprice;	
+	}
+	@PutMapping("/updateStockPrice/{stockexchange}")
+	public StockPrice updateStockPrice(@RequestBody StockPrice stockprice, @PathVariable("stockexchange") String stockexchange)
+	{
+		stockprice.setCompanyname(stockexchange);
+		System.out.println(stockprice);
+		stockpriceRepository.save(stockprice);
+		return stockprice;	
+	}
+
+	@DeleteMapping("/deleteStockprice/{stockexchange}")
+
+	public Boolean deleteStockprice( @PathVariable("stockexchange") String stockexchange) {
+
+
+
+		 System.out.println(stockexchange);
+
+		 stockpriceRepository.deleteById(stockexchange);
+
+		 return true;
+
+		 }
+
+
+	 @GetMapping("/findOneInAll/{stockexchange}")
+
+	 public StockPrice findoneinall(@PathVariable("stockexchange") String stockexchange) {
+
+
+
+	 Optional<StockPrice> stockprice = stockpriceRepository.findById(stockexchange);
+
+	 return stockprice.get();
+
+
+
+	 }
+	 @GetMapping("/findByCompanyname/{companyname}")
+
+
+
+	 public List<StockPrice> findByCompanyname(@PathVariable("companyname") String companyname)
+
+
+
+	 {
+
+
+
+	 List<StockPrice> stockprice = stockpriceRepository.findByCompanyname(companyname);
+
+
+
+	 return stockprice;
+
+
+
+	 }
+
+
+}
